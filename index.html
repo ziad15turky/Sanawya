@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التحدي: النماذج الاسترشادية الوزارية | علمي رياضة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b0f19; /* خلفية ليلية هادئة تساعد على التركيز */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 850px;
+            background: linear-gradient(145deg, #111827 0%, #0f172a 100%);
+            color: #f3f4f6;
+            padding: 40px;
+            border: 2px solid #3b82f6; /* إطار أزرق تكنولوجي مشرق */
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(59, 130, 246, 0.15);
+            position: relative;
+        }
+
+        /* لمسة إضاءة علوية مشجعة */
+        .dashboard-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #10b981, #3b82f6, transparent);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header .main-title {
+            font-size: 36px;
+            font-weight: 900;
+            background: linear-gradient(to left, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .header .sub-title {
+            font-size: 18px;
+            color: #9ca3af; 
+            margin: 8px 0 0 0;
+            font-weight: 700;
+        }
+
+        /* بار الإنجاز المطور */
+        .progress-section {
+            background: #1f2937;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #374151;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: 700;
+            color: #e5e7eb;
+            margin-bottom: 12px;
+        }
+
+        .progress-bg {
+            background: #111827;
+            height: 16px;
+            border-radius: 20px;
+            overflow: hidden;
+            padding: 2px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .intro-quote {
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: center;
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        /* جدول المهام الحركي */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px; 
+            margin-bottom: 30px;
+        }
+
+        th {
+            background-color: #1f2937;
+            color: #60a5fa;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            border-bottom: 2px solid #3b82f6;
+            text-align: center;
+        }
+
+        tr {
+            background: #1e293b;
+            cursor: pointer;
+        }
+
+        tr:hover {
+            background: #273549;
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        td {
+            padding: 16px;
+            text-align: center;
+            font-size: 15px;
+            color: #e2e8f0;
+            border-top: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+        }
+
+        td:first-child {
+            border-right: 1px solid #334155;
+            border-radius: 0 12px 12px 0;
+            text-align: right;
+            padding-right: 25px;
+        }
+
+        td:last-child {
+            border-left: 1px solid #334155;
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* ستايل عند اكتمال المادة */
+        tr.completed {
+            background: rgba(17, 24, 39, 0.6) !important;
+            opacity: 0.6;
+        }
+
+        tr.completed td {
+            color: #64748b !important;
+            text-decoration: line-through;
+        }
+
+        tr.completed .status-btn {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-color: #10b981;
+        }
+
+        tr.completed .checkbox-dot {
+            background: #10b981;
+            border-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .subject-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-dot {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+
+        .status-btn {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* بنل التحفيز السفلي */
+        .motivation-grid {
+            background: #111827;
+            border: 1px solid #374151;
+            padding: 22px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #d1d5db;
+        }
+
+        .motivation-grid strong {
+            color: #60a5fa;
+            display: block;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #9ca3af;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .dashboard-container { padding: 20px; border-radius: 12px; }
+            th, td { padding: 12px 8px; font-size: 13px; }
+            .header .main-title { font-size: 26px; }
+            td:first-child { padding-right: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <div class="header">
+        <div class="main-title">منصة التحدي والإنجاز الإلكترونية</div>
+        <div class="sub-title">النماذج الاسترشادية الوزارية الرسمية | الثانوية العامة (علمي رياضة)</div>
+    </div>
+
+    <div class="progress-section">
+        <div class="progress-info">
+            <span>🚀 المسافة المتبقية لإنهاء المعركة الاسترشادية:</span>
+            <span id="percent-counter">0%</span>
+        </div>
+        <div class="progress-bg">
+            <div class="progress-fill" id="progress-filler"></div>
+        </div>
+    </div>
+
+    <div class="intro-quote">
+        "المهندس لا ينتظر الظروف المثالية، بل يصنعها بتركيزه وقوة إرادته. اضغط على المادة التي تنهي نموذجها فوراً!"
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">المادة الدراسية</th>
+                <th style="width: 50%;">مهمة التحدي</th>
+                <th style="width: 20%;">الحالة الإنجازية</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-id="pure-math" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>الرياضيات البحتة</div></td>
+                <td>فرّم وتفكيك نموذج الوزارة (التفاضل، التكامل، الجبر، الفراغية)</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+            <tr data-id="app-math" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>الرياضيات التطبيقية</div></td>
+                <td>تأمين وقفل أسئلة الاستاتيكا والديناميكا بالنموذج الرسمي</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+            <tr data-id="physics" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>الفيزياء</div></td>
+                <td>حل وفهم أفكار النموذج الاسترشادي للفيزياء كاملاً</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+            <tr data-id="chemistry" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>الكيمياء</div></td>
+                <td>حل واستيعاب معادلات ومسائل النموذج الوزاري للكيمياء</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+            <tr data-id="arabic" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>اللغة العربية</div></td>
+                <td>إنهاء النموذج الشامل بجميع فروعه (النحو، البلاغة، القراءة..)</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+            <tr data-id="english" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>اللغة الأجنبية الأولى</div></td>
+                <td>حل وتدريب عقلك على امتحان الإنجليزي الاسترشادي</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+            <tr data-id="second-lang" onclick="checkSubject(this)">
+                <td><div class="subject-container"><div class="checkbox-dot"></div>اللغة الأجنبية الثانية</div></td>
+                <td>تأمين درجات نموذج اللغة الثانية وضمان سلاسة الحل</td>
+                <td><span class="status-btn">في الانتظار</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="motivation-grid">
+        <strong>🔥 وقود الأمتار الأخيرة لمهندسي المستقبل:</strong>
+        تذكر دائماً أن التعب ساعة، والراحة دهر، وفرحة النتيجة تنسيك كل سهر الليالي. أنت لا تدرس لتنجح فقط، بل تدرس لتثبت لنفسك وللعالم أنك قادر على تخطي أصعب التحديات وتصميم مستقبلك الخاص بيدك. النماذج الوزارية هي دليلك الحقيقي لكشف شكل الامتحان، فواجهها بشجاعة!
+    </div>
+
+    <div class="footer">
+        ⚡ "الاستمرار يصنع المعجزات.. تحرّك الآن!"
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const id = row.getAttribute('data-id');
+            if (localStorage.getItem(id) === 'completed') {
+                row.classList.add('completed');
+                row.querySelector('.status-btn').innerText = "تم السحق بنجاح 🔥";
+            }
+        });
+        calculateProgress();
+    });
+
+    function checkSubject(element) {
+        element.classList.toggle('completed');
+        const id = element.getAttribute('data-id');
+        const btn = element.querySelector('.status-btn');
+        
+        if (element.classList.contains('completed')) {
+            localStorage.setItem(id, 'completed');
+            btn.innerText = "تم السحق بنجاح 🔥";
+        } else {
+            localStorage.removeItem(id);
+            btn.innerText = "في الانتظار";
+        }
+        
+        calculateProgress();
+    }
+
+    function calculateProgress() {
+        const total = document.querySelectorAll('tbody tr').length;
+        const checked = document.querySelectorAll('tbody tr.completed').length;
+        const result = Math.round((checked / total) * 100);
+        
+        document.getElementById('progress-filler').style.width = result + '%';
+        document.getElementById('percent-counter').innerText = result + '%';
+    }
+</script>
+
+</body>
+</html>
+
