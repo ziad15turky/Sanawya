@@ -32,6 +32,7 @@
             border: 2px solid #3b82f6;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(59, 130, 246, 0.15);
+            position: relative;
         }
 
         @media (max-width: 768px) {
@@ -44,6 +45,7 @@
         .header {
             text-align: center;
             margin-bottom: 25px;
+            position: relative;
         }
 
         .header .main-title {
@@ -55,9 +57,45 @@
             margin: 0;
         }
 
+        /* زر تغيير الشعبة */
+        .change-branch-btn {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .change-branch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .change-branch-btn.show {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .header .main-title {
                 font-size: 28px;
+            }
+
+            .change-branch-btn {
+                position: absolute;
+                top: -5px;
+                left: 0;
+                padding: 8px 15px;
+                font-size: 13px;
             }
         }
 
@@ -180,6 +218,49 @@
             width: 0%;
         }
 
+        /* حاوية الأوسمة الفردية لكل مادة */
+        .subject-badges-container {
+            padding: 8px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.5);
+            border-bottom: 1px solid #374151;
+            min-height: 32px;
+        }
+
+        .subject-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #1f2937;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            border: 1px solid #374151;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .subject-badge.unlocked {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: #f59e0b;
+            color: #fcd34d;
+            font-weight: 600;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+
         .accordion-header {
             padding: 15px 20px;
             font-size: 17px;
@@ -282,41 +363,6 @@
             background: linear-gradient(90deg, #1e1b4b 0%, #1e293b 100%);
         }
 
-        /* الإنجازات والأوسمة الديناميكية */
-        .achievements-panel {
-            background: #111827;
-            border: 1px solid #374151;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-
-        .achievements-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #f59e0b;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .achievement-badge {
-            display: inline-block;
-            background: #1f2937;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            margin: 4px;
-            border: 1px solid #374151;
-        }
-
-        .achievement-badge.unlocked {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: #f59e0b;
-            color: #f59e0b;
-        }
-
         /* رسائل التشجيع التلقائية */
         .toast-notification {
             position: fixed;
@@ -354,6 +400,7 @@
 <div class="dashboard-container">
     
     <div class="header">
+        <button id="changeBranchBtn" class="change-branch-btn" onclick="resetBranch()">تغيير الشعبة 🔄</button>
         <div class="main-title">تحدي الثانوية 🎯</div>
     </div>
 
@@ -376,15 +423,6 @@
         </div>
 
         <div id="accordionsContainer"></div>
-
-        <div class="achievements-panel">
-            <div class="achievements-title">🏅 أوسمة الإنجاز المحققة:</div>
-            <div id="badgesBox">
-                <span class="achievement-badge" id="badge-quarter">🥈 خطوة الألف ميل (ربع المادة)</span>
-                <span class="achievement-badge" id="badge-half">🥇 نصف الطريق (50% من المادة)</span>
-                <span class="achievement-badge" id="badge-near">🔥 الهاشتاج الأخير (باقي امتحانين)</span>
-            </div>
-        </div>
     </div>
 
 </div>
@@ -417,12 +455,42 @@
 
     let currentBranch = "";
 
+    // تحميل الشعبة المحفوظة عند بدء التحميل
+    window.addEventListener('DOMContentLoaded', function() {
+        const savedBranch = localStorage.getItem('selectedBranch');
+        if (savedBranch && branchData[savedBranch]) {
+            selectBranch(savedBranch);
+        }
+    });
+
     function selectBranch(branch) {
         currentBranch = branch;
+        // حفظ الشعبة في LocalStorage
+        localStorage.setItem('selectedBranch', branch);
+        
         document.getElementById("selectionScreen").style.display = "none";
         document.getElementById("mainDashboard").style.display = "block";
+        document.getElementById("changeBranchBtn").classList.add("show");
+        
         generateAccordions(branch);
         loadSavedData();
+    }
+
+    function resetBranch() {
+        // مسح الشعبة المحفوظة
+        localStorage.removeItem('selectedBranch');
+        // إزالة جميع البيانات المحفوظة للمواد
+        Object.keys(localStorage).forEach(key => {
+            if (key.includes(currentBranch)) {
+                localStorage.removeItem(key);
+            }
+        });
+        
+        currentBranch = "";
+        document.getElementById("mainDashboard").style.display = "none";
+        document.getElementById("selectionScreen").style.display = "block";
+        document.getElementById("changeBranchBtn").classList.remove("show");
+        document.getElementById("accordionsContainer").innerHTML = "";
     }
 
     function generateAccordions(branch) {
@@ -441,6 +509,10 @@
                             <div class="outer-bar-bg"><div class="outer-bar-fill" id="${subId}-filler"></div></div>
                             <span id="${subId}-counter">0%</span>
                         </div>
+                    </div>
+                    
+                    <div class="subject-badges-container" id="${subId}-badges-container">
+                        <!-- الأوسمة سيتم إضافتها ديناميكياً هنا -->
                     </div>
                     
                     <div class="accordion-header" onclick="toggleAccordion(this, '${subId}')">
@@ -516,7 +588,6 @@
         
         if (row.classList.contains('completed')) {
             localStorage.setItem(rowId, 'completed');
-            // إطلاق عبارة تشجيعية عشوائية عند الحل
             showCheeringToast();
         } else {
             localStorage.removeItem(rowId);
@@ -538,41 +609,50 @@
     }
 
     function calculateProgress(subId) {
-        const total = document.querySelectorAll(`#${subId}-tbody tr`).length;
-        const checked = document.querySelectorAll(`#${subId}-tbody tr.completed`).length;
+        const tbody = document.getElementById(`${subId}-tbody`);
+        if (!tbody) return;
+
+        const total = tbody.querySelectorAll('tr').length;
+        const checked = tbody.querySelectorAll('tr.completed').length;
         const result = Math.round((checked / total) * 100) || 0;
         
         document.getElementById(`${subId}-filler`).style.width = result + '%';
         document.getElementById(`${subId}-counter`).innerText = result + '%';
         
-        // تحديث لوحة الأوسمة والإنجازات بناءً على العدد المتبقي
-        updateAchievements(checked, total);
+        // تحديث الأوسمة الفردية لهذه المادة
+        updateSubjectBadges(subId, checked, total);
     }
 
-    function updateAchievements(checked, total) {
+    function updateSubjectBadges(subId, checked, total) {
+        const badgesContainer = document.getElementById(`${subId}-badges-container`);
+        if (!badgesContainer) return;
+
+        badgesContainer.innerHTML = ""; // مسح الأوسمة السابقة
+
         const remaining = total - checked;
-        
-        // وسام الربع (25%)
+
+        // وسام ربع المادة (25%)
         if (checked >= Math.ceil(total * 0.25)) {
-            document.getElementById("badge-quarter").classList.add("unlocked");
-        } else {
-            document.getElementById("badge-quarter").classList.remove("unlocked");
+            const badge = document.createElement('span');
+            badge.className = 'subject-badge unlocked';
+            badge.innerHTML = '🥈 ربع المادة';
+            badgesContainer.appendChild(badge);
         }
-        
-        // وسام النصف (50%)
+
+        // وسام نصف المادة (50%)
         if (checked >= Math.ceil(total * 0.50)) {
-            document.getElementById("badge-half").classList.add("unlocked");
-        } else {
-            document.getElementById("badge-half").classList.remove("unlocked");
+            const badge = document.createElement('span');
+            badge.className = 'subject-badge unlocked';
+            badge.innerHTML = '🥇 نصف المادة';
+            badgesContainer.appendChild(badge);
         }
-        
-        // وسام متبقي امتحانين
-        if (remaining === 2 && total > 0) {
-            document.getElementById("badge-near").classList.add("unlocked");
-            document.getElementById("badge-near").innerText = "🔥 الهاشتاج الأخير (فاضل امتحانين بس!)";
-        } else {
-            document.getElementById("badge-near").classList.remove("unlocked");
-            document.getElementById("badge-near").innerText = "🔥 الهاشتاج الأخير (باقي امتحانين)";
+
+        // وسام المقاتل الأخير (متبقي امتحانين أو أقل، وليس 100%)
+        if (remaining <= 2 && remaining > 0) {
+            const badge = document.createElement('span');
+            badge.className = 'subject-badge unlocked';
+            badge.innerHTML = `🔥 فاضل ${remaining} ${remaining === 1 ? 'امتحان' : 'امتحانين'}`;
+            badgesContainer.appendChild(badge);
         }
     }
 
