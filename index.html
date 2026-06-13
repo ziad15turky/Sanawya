@@ -258,6 +258,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
+            flex-direction: row-reverse;
         }
 
         .subject-name {
@@ -266,6 +267,7 @@
             color: #f3f4f6;
             min-width: 150px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         .subject-progress-wrapper {
@@ -274,6 +276,7 @@
             align-items: center;
             gap: 12px;
             justify-content: flex-start;
+            min-width: 200px;
         }
 
         .subject-progress-bar {
@@ -282,7 +285,7 @@
             height: 8px;
             border-radius: 20px;
             overflow: hidden;
-            min-width: 150px;
+            min-width: 100px;
         }
 
         .subject-progress-fill {
@@ -297,6 +300,7 @@
             color: #60a5fa;
             min-width: 45px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         .accordion-toggle-btn {
@@ -312,6 +316,7 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
         .accordion-toggle-btn.active {
@@ -457,7 +462,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #fff;
             padding: 12px 25px;
             border-radius: 8px;
@@ -465,11 +470,28 @@
             z-index: 1000;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             opacity: 0;
+            max-width: 90%;
+            text-align: center;
+            border: 1px solid rgba(16, 185, 129, 0.5);
         }
 
         .toast-notification.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
+            animation: toastPulse 0.4s ease-out;
+        }
+
+        @keyframes toastPulse {
+            0% {
+                transform: translateX(-50%) translateY(100px) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(-50%) translateY(-5px) scale(1.05);
+            }
+            100% {
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
         }
 
         @media (max-width: 768px) {
@@ -484,13 +506,17 @@
             }
 
             .subject-name {
-                min-width: 120px;
+                min-width: 100px;
                 font-size: 14px;
             }
 
             .subject-progress-text {
                 min-width: 40px;
                 font-size: 12px;
+            }
+
+            .subject-progress-wrapper {
+                min-width: 150px;
             }
 
             table {
@@ -552,11 +578,26 @@
     };
 
     const cheeringPhrases = [
+        "وحش الثانوية! خطوة كمان نحو حلمك 🚀",
+        "المهندس/الدكتور المستقبلي يضرب من جديد 🔥",
+        "أنت بتصنع مجدك دلوقتي، كمل يا بطل 🎯",
+        "الضغط بيصنع الألماس، وأنت ألماظة الدفعة 💎",
         "الله ينور يا بطل! خطوة قوية نحو الحلم 🚀",
         "مستوى أسطوري! استمر في سحق النماذج 🔥",
         "أنت مهندس المستقبل بلا شك، مجهود رائع 📐",
         "الاستمرار هو السر، قفلت نموذج جديد بنجاح 💎",
-        "عاش جداً! كل امتحان تحله يقربك من الـ 100% 🎯"
+        "عاش جداً! كل امتحان تحله يقربك من الـ 100% 🎯",
+        "بطل الثانوية في الحدث! يلا نكمل 🏆",
+        "لا حد أقوى منك، أنت نجم الدفعة ⭐",
+        "تاني على التوالي؟ أنت جد خطير يا بطل 💪",
+        "كل ضغطة منك تقربك من الحرية، استمر 🎓",
+        "أسطورة! نموذج تاني في الجيب 🔥",
+        "يا إلهي! هذا المستوى من الاجتهاد ما شفنا زيه 🌟",
+        "النجاح سهل مع مثل هذا الاجتهاد، برافو 👏",
+        "أنت بتكتب تاريخك بنفسك، وتاريخ عظيم 📖",
+        "صحيح! هكذا بتصير الأحلام حقيقة 🎪",
+        "إنت اللي في المقدمة يا أسطورة! كمل كمل 🚀",
+        "سحقت نموذج آخر! ��نت إعصار الدفعة 🌪️"
     ];
 
     let currentBranch = "";
@@ -684,11 +725,16 @@
         const toast = document.getElementById("toast");
         const randomPhrase = cheeringPhrases[Math.floor(Math.random() * cheeringPhrases.length)];
         toast.innerText = randomPhrase;
+        toast.classList.remove("show");
+        
+        // Trigger reflow to restart animation
+        void toast.offsetWidth;
+        
         toast.classList.add("show");
         
         setTimeout(() => {
             toast.classList.remove("show");
-        }, 3000);
+        }, 3500);
     }
 
     function calculateProgress(subId) {
