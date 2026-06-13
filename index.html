@@ -34,6 +34,13 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(59, 130, 246, 0.15);
         }
 
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+        }
+
         .header {
             text-align: center;
             margin-bottom: 25px;
@@ -46,6 +53,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .header .main-title {
+                font-size: 28px;
+            }
         }
 
         /* شاشة اختيار الشعبة الأولى */
@@ -83,6 +96,14 @@
             transform: translateY(-2px);
         }
 
+        @media (max-width: 768px) {
+            .branch-btn {
+                width: 90%;
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+
         /* لوحة التحكم والمواد (مخفية في البداية) */
         .main-dashboard {
             display: none;
@@ -102,6 +123,8 @@
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .progress-bg {
@@ -132,6 +155,8 @@
             align-items: center;
             justify-content: space-between;
             font-size: 13px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .outer-bar-bg {
@@ -141,6 +166,12 @@
             border-radius: 10px;
             overflow: hidden;
             margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .outer-bar-bg {
+                width: 50%;
+            }
         }
 
         .outer-bar-fill {
@@ -168,6 +199,7 @@
             display: none;
             background: #111827;
             padding: 10px 15px;
+            overflow-x: auto;
         }
 
         /* الجداول الداخلية */
@@ -175,6 +207,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 6px;
+            min-width: 500px;
         }
 
         tr {
@@ -303,6 +336,14 @@
         .toast-notification.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .toast-notification {
+                bottom: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -498,7 +539,7 @@
 
     function calculateProgress(subId) {
         const total = document.querySelectorAll(`#${subId}-tbody tr`).length;
-        const checked = document.querySelectorAll(`#${subId}-tbody tr.completed').length;
+        const checked = document.querySelectorAll(`#${subId}-tbody tr.completed`).length;
         const result = Math.round((checked / total) * 100) || 0;
         
         document.getElementById(`${subId}-filler`).style.width = result + '%';
