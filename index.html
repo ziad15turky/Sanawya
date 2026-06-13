@@ -389,12 +389,11 @@
             display: block;
         }
 
-        /* الجداول الداخلية */
+        /* الجداول الداخلية - مبسطة */
         table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 6px;
-            min-width: 500px;
         }
 
         tr {
@@ -407,21 +406,14 @@
         }
 
         td {
-            padding: 12px;
+            padding: 12px 15px;
             font-size: 14px;
-            text-align: center;
+            text-align: right;
         }
 
         td:first-child {
-            border-radius: 0 8px 8px 0;
+            border-radius: 8px;
             text-align: right;
-            padding-right: 15px;
-        }
-
-        td:last-child {
-            border-radius: 8px 0 0 8px;
-            color: #9ca3af;
-            font-size: 12px;
         }
 
         .exam-name {
@@ -457,10 +449,6 @@
         tr.completed .checkbox-dot {
             background: #10b981;
             border-color: #10b981;
-        }
-
-        .exam-row {
-            background: linear-gradient(90deg, #1e1b4b 0%, #1e293b 100%);
         }
 
         /* رسائل التشجيع التلقائية */
@@ -503,6 +491,15 @@
             .subject-progress-text {
                 min-width: 40px;
                 font-size: 12px;
+            }
+
+            table {
+                border-spacing: 0 4px;
+            }
+
+            td {
+                padding: 10px 12px;
+                font-size: 13px;
             }
         }
     </style>
@@ -553,16 +550,6 @@
         science: ["الأحياء", "الجيولوجيا والبيئة", "الفيزياء", "الكيمياء", "اللغة العربية واللغات"],
         arts: ["التاريخ", "الجغرافيا", "الفلسفة والمنطق", "علم النفس والاجتماع", "اللغة العربية واللغات"]
     };
-
-    const datesSchedule = [
-        "الأحد 14/6/2026 - 09:00 ص", "الإثنين 15/6/2026 - 09:00 ص",
-        "الثلاثاء 16/6/2026 - 09:00 ص", "الأربعاء 17/6/2026 - 09:00 ص",
-        "الخميس 18/6/2026 - 09:00 ص", "الجمعة 19/6/2026 - 02:00 م",
-        "السبت 20/6/2026 - 09:00 ص", "الأحد 21/6/2026 - 09:00 ص",
-        "الإثنين 22/6/2026 - 09:00 ص", "الثلاثاء 23/6/2026 - 09:00 ص",
-        "الاربعاء 24/6/2026 - الدور الأول 24", "الخميس 25/6/2026 - الدور الثاني 24",
-        "السبت 27/6/2026 - الدور الأول 25", "الأحد 28/6/2026 - الدور الثاني 25"
-    ];
 
     const cheeringPhrases = [
         "الله ينور يا بطل! خطوة قوية نحو الحلم 🚀",
@@ -639,36 +626,17 @@
                         <table>
                             <tbody id="${subId}-tbody">`;
 
-            // 10 نماذج استرشادية
+            // 10 نماذج استرشادية فقط (بدون تواريخ)
             for (let i = 1; i <= 10; i++) {
                 const rowId = `${subId}-model-${i}`;
                 html += `
                     <tr data-id="${rowId}" onclick="toggleRow(this, '${subId}')">
-                        <td><div class="checkbox-dot"></div> 
-                            <span class="exam-name">النموذج الاسترشادي المعتمد رقم ${i}</span>
+                        <td>
+                            <div class="checkbox-dot"></div> 
+                            <span class="exam-name">النموذج الاسترشادي رقم ${i}</span>
                         </td>
-                        <td>🗓️ ${datesSchedule[i-1]}</td>
                     </tr>`;
             }
-
-            // 4 امتحانات دور أول وثاني
-            const exams = [
-                { name: "امتحان الدور الأول الرسمي لعام 2024", id: "ex24-1", idx: 10 },
-                { name: "امتحان الدور الثاني الرسمي لعام 2024", id: "ex24-2", idx: 11 },
-                { name: "امتحان الدور الأول الرسمي لعام 2025", id: "ex25-1", idx: 12 },
-                { name: "امتحان الدور الثاني الرسمي لعام 2025", id: "ex25-2", idx: 13 }
-            ];
-
-            exams.forEach(ex => {
-                const rowId = `${subId}-${ex.id}`;
-                html += `
-                    <tr class="exam-row" data-id="${rowId}" onclick="toggleRow(this, '${subId}')">
-                        <td><div class="checkbox-dot"></div> 
-                            <span class="exam-name">🌟 ${ex.name}</span>
-                        </td>
-                        <td>🗓️ ${datesSchedule[ex.idx]}</td>
-                    </tr>`;
-            });
 
             html += `</tbody></table></div></div>`;
             container.innerHTML += html;
