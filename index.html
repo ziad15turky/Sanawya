@@ -187,59 +187,110 @@
             background: #1e293b;
         }
 
-        .outer-progress-box {
-            padding: 10px 20px 0px 20px;
+        /* رأس المادة الموحد (Unified Header) */
+        .subject-header-wrapper {
+            padding: 15px 20px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 13px;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .outer-bar-bg {
-            width: 70%;
+        .subject-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .subject-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #f3f4f6;
+            min-width: 150px;
+            text-align: right;
+        }
+
+        .subject-progress-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: flex-start;
+        }
+
+        .subject-progress-bar {
+            flex: 1;
             background: #111827;
-            height: 6px;
-            border-radius: 10px;
+            height: 8px;
+            border-radius: 20px;
             overflow: hidden;
-            margin-right: 10px;
+            min-width: 150px;
         }
 
-        @media (max-width: 768px) {
-            .outer-bar-bg {
-                width: 50%;
-            }
-        }
-
-        .outer-bar-fill {
-            background: #10b981;
+        .subject-progress-fill {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
             height: 100%;
             width: 0%;
         }
 
-        /* حاوية الأوسمة الفردية لكل مادة */
-        .subject-badges-container {
-            padding: 8px 20px;
+        .subject-progress-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #60a5fa;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .accordion-toggle-btn {
+            background: none;
+            border: none;
+            color: #60a5fa;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-toggle-btn.active {
+            transform: rotate(180deg);
+            color: #10b981;
+        }
+
+        /* حاوية الأوسمة في الهيدر */
+        .subject-badges-header {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.5);
-            border-bottom: 1px solid #374151;
-            min-height: 32px;
+            min-height: 0;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
         }
 
-        .subject-badge {
+        .subject-badges-header.active {
+            max-height: 100px;
+            opacity: 1;
+        }
+
+        .subject-badge-header {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #1f2937;
-            padding: 4px 12px;
+            background: rgba(245, 158, 11, 0.2);
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 11px;
-            border: 1px solid #374151;
+            font-size: 12px;
+            border: 1px solid #f59e0b;
+            color: #fcd34d;
+            font-weight: 600;
             animation: slideIn 0.4s ease-out;
+            white-space: nowrap;
         }
 
         @keyframes slideIn {
@@ -253,27 +304,20 @@
             }
         }
 
-        .subject-badge.unlocked {
-            background: rgba(245, 158, 11, 0.2);
-            border-color: #f59e0b;
-            color: #fcd34d;
-            font-weight: 600;
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        @keyframes completePulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
         }
 
-        .accordion-header {
-            padding: 15px 20px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .accordion-header.active {
-            color: #60a5fa;
-            border-bottom: 1px dashed #334155;
+        .subject-badge-header.completed {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.3));
+            border-color: #10b981;
+            color: #86efac;
+            animation: completePulse 2s infinite;
         }
 
         .accordion-content {
@@ -281,6 +325,10 @@
             background: #111827;
             padding: 10px 15px;
             overflow-x: auto;
+        }
+
+        .accordion-content.active {
+            display: block;
         }
 
         /* الجداول الداخلية */
@@ -390,6 +438,20 @@
                 padding: 10px 20px;
                 font-size: 14px;
             }
+
+            .subject-header-row {
+                gap: 10px;
+            }
+
+            .subject-name {
+                min-width: 120px;
+                font-size: 14px;
+            }
+
+            .subject-progress-text {
+                min-width: 40px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -465,7 +527,6 @@
 
     function selectBranch(branch) {
         currentBranch = branch;
-        // حفظ الشعبة في LocalStorage
         localStorage.setItem('selectedBranch', branch);
         
         document.getElementById("selectionScreen").style.display = "none";
@@ -477,9 +538,7 @@
     }
 
     function resetBranch() {
-        // مسح الشعبة المحفوظة
         localStorage.removeItem('selectedBranch');
-        // إزالة جميع البيانات المحفوظة للمواد
         Object.keys(localStorage).forEach(key => {
             if (key.includes(currentBranch)) {
                 localStorage.removeItem(key);
@@ -502,29 +561,28 @@
             const subId = `${branch}-sub-${subIndex}`;
             
             let html = `
-                <div class="subject-accordion">
-                    <div class="outer-progress-box">
-                        <span>إنجاز مادة: <strong>${subject}</strong></span>
-                        <div style="display:flex; align-items:center; width:65%; justify-content:flex-end;">
-                            <div class="outer-bar-bg"><div class="outer-bar-fill" id="${subId}-filler"></div></div>
-                            <span id="${subId}-counter">0%</span>
+                <div class="subject-accordion" id="${subId}-accordion">
+                    <div class="subject-header-wrapper" onclick="toggleAccordion('${subId}')">
+                        <div class="subject-header-row">
+                            <button class="accordion-toggle-btn" id="${subId}-toggle">▼</button>
+                            <div class="subject-progress-wrapper">
+                                <span class="subject-progress-text" id="${subId}-counter">0%</span>
+                                <div class="subject-progress-bar">
+                                    <div class="subject-progress-fill" id="${subId}-filler"></div>
+                                </div>
+                            </div>
+                            <span class="subject-name">${subject}</span>
+                        </div>
+                        <div class="subject-badges-header" id="${subId}-badges-header">
+                            <!-- الأوسمة سيتم إضافتها ديناميكياً هنا -->
                         </div>
                     </div>
                     
-                    <div class="subject-badges-container" id="${subId}-badges-container">
-                        <!-- الأوسمة سيتم إضافتها ديناميكياً هنا -->
-                    </div>
-                    
-                    <div class="accordion-header" onclick="toggleAccordion(this, '${subId}')">
-                        <span>اضغط لاستعراض وتصفح بنك الامتحانات المتاحة</span>
-                        <span class="arrow">▼</span>
-                    </div>
-                    
-                    <div class="accordion-content">
+                    <div class="accordion-content" id="${subId}-content">
                         <table>
                             <tbody id="${subId}-tbody">`;
 
-            // 10 نماذج استرشادية بروابط حقيقية منبثقة ومواعيد
+            // 10 نماذج استرشادية
             for (let i = 1; i <= 10; i++) {
                 const rowId = `${subId}-model-${i}`;
                 html += `
@@ -564,22 +622,26 @@
         });
     }
 
-    function toggleAccordion(header, subId) {
-        const accordion = header.parentElement;
-        const content = accordion.querySelector('.accordion-content');
-        const isVisible = content.style.display === "block";
+    function toggleAccordion(subId) {
+        const accordion = document.getElementById(`${subId}-accordion`);
+        const content = document.getElementById(`${subId}-content`);
+        const toggle = document.getElementById(`${subId}-toggle`);
 
-        document.querySelectorAll('.accordion-content').forEach(el => el.style.display = "none");
-        document.querySelectorAll('.accordion-header').forEach(el => {
-            el.classList.remove('active');
-            el.querySelector('.arrow').innerText = "▼";
+        // إغلاق جميع الأكورديونات الأخرى
+        document.querySelectorAll('.accordion-content.active').forEach(el => {
+            if (el.id !== `${subId}-content`) {
+                el.classList.remove('active');
+            }
+        });
+        document.querySelectorAll('.accordion-toggle-btn.active').forEach(btn => {
+            if (btn.id !== `${subId}-toggle`) {
+                btn.classList.remove('active');
+            }
         });
 
-        if (!isVisible) {
-            content.style.display = "block";
-            header.classList.add('active');
-            header.querySelector('.arrow').innerText = "▲";
-        }
+        // تبديل الأكورديون الحالي
+        content.classList.toggle('active');
+        toggle.classList.toggle('active');
     }
 
     function toggleRow(row, subId) {
@@ -619,40 +681,68 @@
         document.getElementById(`${subId}-filler`).style.width = result + '%';
         document.getElementById(`${subId}-counter`).innerText = result + '%';
         
-        // تحديث الأوسمة الفردية لهذه المادة
-        updateSubjectBadges(subId, checked, total);
+        // تحديث الأوسمة الذكية لهذه المادة
+        updateSmartBadges(subId, checked, total);
     }
 
-    function updateSubjectBadges(subId, checked, total) {
-        const badgesContainer = document.getElementById(`${subId}-badges-container`);
+    function updateSmartBadges(subId, checked, total) {
+        const badgesContainer = document.getElementById(`${subId}-badges-header`);
         if (!badgesContainer) return;
 
         badgesContainer.innerHTML = ""; // مسح الأوسمة السابقة
 
         const remaining = total - checked;
+        const percentage = Math.round((checked / total) * 100);
 
-        // وسام ربع المادة (25%)
-        if (checked >= Math.ceil(total * 0.25)) {
+        // إذا تم إنجاز المادة بنسبة 100%
+        if (percentage === 100) {
             const badge = document.createElement('span');
-            badge.className = 'subject-badge unlocked';
-            badge.innerHTML = '🥈 ربع المادة';
+            badge.className = 'subject-badge-header completed';
+            badge.innerHTML = '🏆 تم الانتهاء وسحق المادة بنجاح!';
             badgesContainer.appendChild(badge);
+            badgesContainer.classList.add('active');
+            return;
         }
 
-        // وسام نصف المادة (50%)
-        if (checked >= Math.ceil(total * 0.50)) {
-            const badge = document.createElement('span');
-            badge.className = 'subject-badge unlocked';
-            badge.innerHTML = '🥇 نصف المادة';
-            badgesContainer.appendChild(badge);
-        }
-
-        // وسام المقاتل الأخير (متبقي امتحانين أو أقل، وليس 100%)
+        // إذا تبقى امتحانان أو واحد فقط
         if (remaining <= 2 && remaining > 0) {
             const badge = document.createElement('span');
-            badge.className = 'subject-badge unlocked';
-            badge.innerHTML = `🔥 فاضل ${remaining} ${remaining === 1 ? 'امتحان' : 'امتحانين'}`;
+            badge.className = 'subject-badge-header unlocked';
+            if (remaining === 1) {
+                badge.innerHTML = '⚡ متبقي امتحان واحد على التقفيل!';
+            } else {
+                badge.innerHTML = '🔥 متبقي امتحانان فقط!';
+            }
             badgesContainer.appendChild(badge);
+            badgesContainer.classList.add('active');
+            return;
+        }
+
+        // الأوسمة العادية (25% و 50%)
+        let hasBadges = false;
+
+        // وسام 25%
+        if (checked >= Math.ceil(total * 0.25) && percentage < 50) {
+            const badge = document.createElement('span');
+            badge.className = 'subject-badge-header unlocked';
+            badge.innerHTML = '🥈 ربع المادة';
+            badgesContainer.appendChild(badge);
+            hasBadges = true;
+        }
+
+        // وسام 50%
+        if (checked >= Math.ceil(total * 0.50) && percentage < 100) {
+            const badge = document.createElement('span');
+            badge.className = 'subject-badge-header unlocked';
+            badge.innerHTML = '🥇 نصف المادة';
+            badgesContainer.appendChild(badge);
+            hasBadges = true;
+        }
+
+        if (hasBadges) {
+            badgesContainer.classList.add('active');
+        } else {
+            badgesContainer.classList.remove('active');
         }
     }
 
